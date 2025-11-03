@@ -1,9 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/YanisArar931/ProjetFilRouge-Golang/user"
+)
 
-func main(){
-	for{
+func main() {
+	for {
 		fmt.Println("-----------------------------")
 		fmt.Println("Bienvenue dans notre Mini-CRM !")
 		fmt.Println("-----------------------------")
@@ -15,19 +18,22 @@ func main(){
 		fmt.Println("5. Quitter l'application")
 
 		var choice int
+		fmt.Println()
 		fmt.Print("Veuillez entrer votre choix (1-5) : ")
+		fmt.Println()
 		fmt.Scan(&choice)
 
 		switch choice {
-		case 1: 
-			fmt.Println("Ajouter un contact sélectionné.")
-		case 2: 
+		case 1:
+			user := user.AddUser()
+			fmt.Printf("Utilisateur créé : %+v\n", user)
+		case 2:
 			fmt.Println("Lister tous les contacts sélectionné.")
-		case 3: 
+		case 3:
 			fmt.Println("Supprimer un contact par son ID sélectionné.")
-		case 4: 
+		case 4:
 			fmt.Println("Mettre à jour un contact sélectionné.")
-		case 5: 
+		case 5:
 			fmt.Println("Merci d'avoir utilisé notre Mini-CRM !")
 			return
 		default:
