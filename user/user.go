@@ -13,6 +13,10 @@ type User struct {
 	Email string
 }
 
+type List struct {
+	Users []User
+}
+
 var nextID = 1
 
 func AddUser() User {
@@ -33,8 +37,24 @@ func AddUser() User {
 	}
 	nextID++
 
-	fmt.Printf("Contact ajouté: %s %s\n", user.Name, user.Email)
+	fmt.Printf("Contact ajouté: %s <%s>\n", user.Name, user.Email)
 	return user
+}
+
+func (l *List) Add(u User) {
+	l.Users = append(l.Users, u)
+}
+
+func (l *List) Display() {
+	if len(l.Users) == 0 {
+		fmt.Println("Liste vide")
+		return
+	}
+
+	fmt.Println("Liste des contacts :")
+	for _, u := range l.Users {
+		fmt.Printf("- id : %d, Nom : %s, Email : %s\n", u.ID, u.Name, u.Email)
+	}
 }
 
 func (l *List) Update() {
