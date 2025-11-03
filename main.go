@@ -2,12 +2,26 @@ package main
 
 import (
 	"fmt"
-
+	"flag"
 	"github.com/YanisArar931/ProjetFilRouge-Golang/user"
 )
 
 func main() {
+	nameFlag := flag.String("name", "", "")
+	emailflag := flag.String("email", "", "")
+	flag.Parse()
+
 	contactList := user.List{}
+
+	if *nameFlag != "" && *emailflag != "" {
+		newUser := user.User{
+			Name: *nameFlag,
+			Email: *emailflag,
+		}
+		contactList.Add(newUser)
+		fmt.Printf("Utilisateur créé via les flags : %+v\n", newUser)
+		return
+	}
 
 	for {
 		fmt.Println("-----------------------------")
