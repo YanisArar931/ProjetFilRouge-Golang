@@ -19,7 +19,7 @@ func main() {
 			Email: *emailflag,
 		}
 		contactList.Add(newUser)
-		fmt.Printf("Utilisateur créé via les flags : %+v\n", newUser)
+		fmt.Printf("Contact créé via les flags : %+v\n", newUser)
 		return
 	}
 
@@ -44,7 +44,7 @@ func main() {
 		case 1:
 			user := user.AddUser()
 			contactList.Add(user)
-			fmt.Printf("Utilisateur créé : %+v\n", user)
+			fmt.Printf("Contact créé : %+v\n", user)
 		case 2:
 			fmt.Println("Lister tous les contacts sélectionné.")
 			contactList.Display()
