@@ -14,7 +14,7 @@ func (l *List) Display() {
 
 	fmt.Println("Liste des contacts :")
 	for _, u := range l.Users {
-		fmt.Printf("- [%d] %s <%s>\n", u.ID, u.Name, u.Email)
+		fmt.Printf("- id : %d, Nom : %s, Email : %s\n", u.ID, u.Name, u.Email)
 	}
 }
 
