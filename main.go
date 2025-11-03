@@ -35,7 +35,7 @@ func main() {
 			fmt.Println("Lister tous les contacts sélectionné.")
 			contactList.Display()
 		case 3:
-			fmt.Println("Supprimer un contact par son ID sélectionné.")
+			contactList.Delete()
 		case 4:
 			contactList.Update()
 		case 5:

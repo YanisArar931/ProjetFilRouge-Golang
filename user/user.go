@@ -77,3 +77,18 @@ func (l *List) Update() {
 
 	fmt.Println("Contact mis à jour !")
 }
+
+func (l *List) Delete() {
+	var id int
+	fmt.Print("Entrez l'ID du contact à supprimer : ")
+	fmt.Scan(&id)
+
+	for i, user := range l.Users {
+		if user.ID == id {
+			l.Users = append(l.Users[:i], l.Users[i+1:]...)
+			fmt.Printf("Contact avec ID %d supprimé.\n", id)
+			return
+		}
+	}
+	fmt.Printf("Aucun contact trouvé avec l'ID %d.\n", id)
+}
