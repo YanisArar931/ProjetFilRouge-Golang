@@ -11,7 +11,7 @@ func main() {
 	emailflag := flag.String("email", "", "")
 	flag.Parse()
 
-	contactList := user.List{}
+	contactList := user.NewList()
 
 	if *nameFlag != "" && *emailflag != "" {
 		newUser := user.User{

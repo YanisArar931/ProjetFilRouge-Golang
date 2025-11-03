@@ -14,10 +14,16 @@ type User struct {
 }
 
 type List struct {
-	Users []User
+	Users map[int]User
+	nextID int
 }
 
-var nextID = 1
+func NewList() *List {
+	return &List{
+		Users:  make(map[int]User),
+		nextID: 1,
+	}
+}
 
 func AddUser() User {
 	reader := bufio.NewReader(os.Stdin)
@@ -30,19 +36,17 @@ func AddUser() User {
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 
-	user := User{
-		ID:    nextID,
-		Name:  name,
+	return User{
+		Name: name,
 		Email: email,
 	}
-	nextID++
-
-	fmt.Printf("Contact ajouté: %s <%s>\n", user.Name, user.Email)
-	return user
 }
 
 func (l *List) Add(u User) {
-	l.Users = append(l.Users, u)
+	u.ID = l.nextID
+	l.Users[u.ID] = u
+	l.nextID++
+	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", u.ID, u.Name, u.Email)
 }
 
 func (l *List) Display() {
@@ -68,47 +72,43 @@ func (l *List) Update() {
 	var id int
 	fmt.Scan(&id)
 
-	var found *User
-	for i := range l.Users {
-		if l.Users[i].ID == id {
-			found = &l.Users[i]
-			break
-		}
-	}
-
-	if found == nil {
-		fmt.Println("Aucun contact trouvé avec cet ID")
+	user, exists := l.Users[id]
+	if !exists {
+		fmt.Println("Aucun contact trouvé avec cet ID.")
 		return
 	}
 
-	fmt.Printf("Nom actuel : %s. Nouveau nom (laisser vide pour ne pas changer) : ", found.Name)
+	fmt.Printf("Nom actuel : %s. Nouveau nom (laisser vide pour ne pas changer) : ", user.Name)
 	name, _ := reader.ReadString('\n')
 	name = strings.TrimSpace(name)
 	if name != "" {
-		found.Name = name
+		user.Name = name
 	}
 
-	fmt.Printf("Email actuel : %s. Nouvel email (laisser vide pour ne pas changer) : ", found.Email)
+	fmt.Printf("Email actuel : %s. Nouvel email (laisser vide pour ne pas changer) : ", user.Email)
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 	if email != "" {
-		found.Email = email
+		user.Email = email
 	}
-
+	l.Users[id] = user
 	fmt.Println("Contact mis à jour !")
 }
 
 func (l *List) Delete() {
+	if len(l.Users) == 0 {
+		fmt.Println("Liste vide, rien à supprimer")
+		return
+	}
+
 	var id int
 	fmt.Print("Entrez l'ID du contact à supprimer : ")
 	fmt.Scan(&id)
 
-	for i, user := range l.Users {
-		if user.ID == id {
-			l.Users = append(l.Users[:i], l.Users[i+1:]...)
-			fmt.Printf("Contact avec ID %d supprimé.\n", id)
-			return
-		}
+	if _, exists := l.Users[id]; exists {
+		delete(l.Users, id)
+		fmt.Printf("Contact avec ID %d supprimé.\n", id)
+	} else {
+		fmt.Printf("Aucun contact trouvé avec l'ID %d.\n", id)
 	}
-	fmt.Printf("Aucun contact trouvé avec l'ID %d.\n", id)
 }
