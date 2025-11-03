@@ -1,4 +1,4 @@
-# 🧭 Mini CRM en Go
+# Mini CRM en Go
 
 Une application en ligne de commande (CLI) pour gérer une liste de contacts :  
 ajout, affichage, mise à jour et suppression.
@@ -15,7 +15,7 @@ cd ProjetFilRouge-Golang
 
 ### Exécuter le programme
 ```bash
-go run main.go
+go run .
 ```
 
 ## Fonctionnalités
