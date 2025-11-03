@@ -37,7 +37,7 @@ func main() {
 		case 3:
 			fmt.Println("Supprimer un contact par son ID sélectionné.")
 		case 4:
-			fmt.Println("Mettre à jour un contact sélectionné.")
+			contactList.Update()
 		case 5:
 			fmt.Println("Merci d'avoir utilisé notre Mini-CRM !")
 			return
