@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+
 	"github.com/YanisArar931/ProjetFilRouge-Golang/user"
 )
 
 func main() {
+	contactList := user.List{}
+
 	for {
 		fmt.Println("-----------------------------")
 		fmt.Println("Bienvenue dans notre Mini-CRM !")
@@ -26,9 +29,11 @@ func main() {
 		switch choice {
 		case 1:
 			user := user.AddUser()
+			contactList.Add(user)
 			fmt.Printf("Utilisateur créé : %+v\n", user)
 		case 2:
 			fmt.Println("Lister tous les contacts sélectionné.")
+			contactList.Display()
 		case 3:
 			fmt.Println("Supprimer un contact par son ID sélectionné.")
 		case 4:
