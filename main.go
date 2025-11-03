@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"flag"
+	"fmt"
+
 	"github.com/YanisArar931/ProjetFilRouge-Golang/user"
 )
 
@@ -15,12 +16,11 @@ func main() {
 
 	if *nameFlag != "" && *emailflag != "" {
 		newUser := user.User{
-			Name: *nameFlag,
+			Name:  *nameFlag,
 			Email: *emailflag,
 		}
 		contactList.Add(newUser)
 		fmt.Printf("Contact créé via les flags : %+v\n", newUser)
-		return
 	}
 
 	for {
