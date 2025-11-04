@@ -4,10 +4,12 @@ import (
 	"flag"
 	"fmt"
 
+	// "github.com/YanisArar931/ProjetFilRouge-Golang/internal/storage"
 	contact "github.com/YanisArar931/ProjetFilRouge-Golang/user"
 )
 
 func Run() {
+	// store := storage.NewMemoryStore()
 	contactList := &contact.ContactList{
 		Contacts: make(map[int]*contact.Contact),
 		NextID:   1,
@@ -63,3 +65,23 @@ func Run() {
 		}
 	}
 }
+
+// func handleAddContact() {
+	
+// }
+
+// func handleGetAllContacts() {
+
+// }
+
+// func handleGetByContactID() {
+
+// }
+
+// func handleUpdateContact() {
+
+// }
+
+// func handleDeleteContact() {
+
+// }
