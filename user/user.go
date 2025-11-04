@@ -14,7 +14,7 @@ type User struct {
 }
 
 type List struct {
-	Users map[int]*User
+	Users  map[int]*User
 	nextID int
 }
 
@@ -25,7 +25,7 @@ func NewList() *List {
 	}
 }
 
-func AddUser() User {
+func (l *List) AddUser() {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Entrez le nom : ")
@@ -36,18 +36,27 @@ func AddUser() User {
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 
-	return User{
-		Name: name,
+	// return User{
+	// 	Name:  name,
+	// 	Email: email,
+	// }
+	u := &User{
+		ID:    l.nextID,
+		Name:  name,
 		Email: email,
 	}
-}
-
-func (l *List) Add(u User) {
-	u.ID = l.nextID
-	l.Users[u.ID] = &u
+	l.Users[u.ID] = u
 	l.nextID++
+
 	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", u.ID, u.Name, u.Email)
 }
+
+// func (l *List) Add(u User) {
+// 	u.ID = l.nextID
+// 	l.Users[u.ID] = &u
+// 	l.nextID++
+// 	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", u.ID, u.Name, u.Email)
+// }
 
 func (l *List) Display() {
 	if len(l.Users) == 0 {
