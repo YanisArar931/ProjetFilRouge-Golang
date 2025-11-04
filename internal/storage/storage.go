@@ -1,14 +1,11 @@
 package storage
+
 import "fmt"
+
 type Contact struct {
 	ID    int
 	Name  string
 	Email string
-}
-
-type ContactList struct {
-	Contacts map[int]*Contact
-	NextID   int
 }
 
 type Storer interface {
