@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"flag"
@@ -7,7 +7,7 @@ import (
 	contact "github.com/YanisArar931/ProjetFilRouge-Golang/user"
 )
 
-func main() {
+func Run() {
 	contactList := &contact.ContactList{
 		Contacts: make(map[int]*contact.Contact),
 		NextID:   1,
@@ -19,13 +19,13 @@ func main() {
 
 	if *nameFlag != "" && *emailFlag != "" {
 		newContact, err := contact.NewContact(contactList.NextID, *nameFlag, *emailFlag)
-    if err != nil {
-        fmt.Println("Erreur :", err)
-    } else {
-        contactList.Contacts[contactList.NextID] = newContact
-        contactList.NextID++
-        fmt.Printf("Contact créé via les flags : [%d] %s <%s>\n", newContact.ID, newContact.Name, newContact.Email)
-    }
+		if err != nil {
+			fmt.Println("Erreur :", err)
+		} else {
+			contactList.Contacts[contactList.NextID] = newContact
+			contactList.NextID++
+			fmt.Printf("Contact créé via les flags : [%d] %s <%s>\n", newContact.ID, newContact.Name, newContact.Email)
+		}
 	}
 
 	for {
