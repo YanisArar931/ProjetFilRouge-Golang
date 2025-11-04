@@ -12,7 +12,7 @@ type Storer interface {
 	AddContact(contact *Contact) error
 	GetAllContacts() ([]*Contact, error)
 	GetByContactID(id int) (*Contact, error)
-	UpdateContact(id int, name, email string) error
+	UpdateContact(id int, name string, email string) error
 	DeleteContact(id int) error
 }
 
