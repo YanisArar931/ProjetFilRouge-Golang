@@ -14,13 +14,13 @@ type User struct {
 }
 
 type List struct {
-	Users map[int]User
+	Users map[int]*User
 	nextID int
 }
 
 func NewList() *List {
 	return &List{
-		Users:  make(map[int]User),
+		Users:  make(map[int]*User),
 		nextID: 1,
 	}
 }
@@ -44,7 +44,7 @@ func AddUser() User {
 
 func (l *List) Add(u User) {
 	u.ID = l.nextID
-	l.Users[u.ID] = u
+	l.Users[u.ID] = &u
 	l.nextID++
 	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", u.ID, u.Name, u.Email)
 }
@@ -91,7 +91,6 @@ func (l *List) Update() {
 	if email != "" {
 		user.Email = email
 	}
-	l.Users[id] = user
 	fmt.Println("Contact mis à jour !")
 }
 
