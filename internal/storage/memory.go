@@ -28,14 +28,14 @@ func (ms *MemoryStore) AddContact(contact *Contact) error {
 
 // }
 
-// func (ms *MemoryStore) GetByContactID(contact *Contact) error {
+// func (ms *MemoryStore) GetByContactID(id int) ([] *Contact, error) {
 
 // }
 
-// func (ms *MemoryStore) UpdateContact(contact *Contact) error {
+// func (ms *MemoryStore) UpdateContact(id int, name string, email string) error {
 
 // }
 
-// func (ms *MemoryStore) DeleteContact(contact *Contact) error {
+// func (ms *MemoryStore) DeleteContact(id int) error {
 
 // }
