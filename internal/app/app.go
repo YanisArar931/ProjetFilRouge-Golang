@@ -35,6 +35,8 @@ func Run() {
 	// }
 
 	for {
+		fmt.Println()
+		fmt.Println()
 		fmt.Println("-----------------------------")
 		fmt.Println("Bienvenue dans notre Mini-CRM !")
 		fmt.Println("-----------------------------")
@@ -146,25 +148,61 @@ func handleGetByContactID(store storage.Storer) {
 }
 
 func handleUpdateContact(store storage.Storer) {
+	reader := bufio.NewReader(os.Stdin)
+
 	fmt.Print("Entrez l'ID du contact à mettre à jour : ")
 	var id int
-	fmt.Scan(&id)
-
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("Entrez le nouveau nom : ")
-	name, _ := reader.ReadString('\n')
-	name = strings.TrimSpace(name)
-
-	fmt.Print("Entrez le nouvel email : ")
-	email, _ := reader.ReadString('\n')
-	email = strings.TrimSpace(email)
-
-	err := store.UpdateContact(id, name, email)
+	_, err := fmt.Scan(&id)
 	if err != nil {
-		fmt.Println("Erreur lors de la mise à jour du contact :", err)
+		fmt.Println("Erreur : entrée invalide.")
 		return
 	}
-	fmt.Printf("Contact avec l'ID %d mis à jour avec succès.\n", id)
+
+	contact, err := store.GetByContactID(id)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return
+	}
+
+	fmt.Printf("Modification du contact [%d] %s <%s>\n", contact.ID, contact.Name, contact.Email)
+
+	for {
+		fmt.Print("Entrez le nouveau nom : ")
+		name, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Erreur de lecture. Réessayez.")
+			continue
+		}
+		name = strings.TrimSpace(name)
+		if name != "" {
+			contact.Name = name
+			break
+		}
+		fmt.Println("Le nom ne peut pas être vide.")
+	}
+
+	for {
+		fmt.Print("Entrez le nouvel email : ")
+		email, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Erreur de lecture. Réessayez.")
+			continue
+		}
+		email = strings.TrimSpace(email)
+		if email != "" && strings.Contains(email, "@") {
+			contact.Email = email
+			break
+		}
+		fmt.Println("L'email est invalide. Veuillez réessayer.")
+	}
+
+	err = store.UpdateContact(contact.ID, contact.Name, contact.Email)
+	if err != nil {
+		fmt.Println("Erreur lors de la mise à jour : ", err)
+		return
+	}
+
+	fmt.Printf("Contact [%d] mis à jour avec succès !\n", contact.ID)
 }
 
 func handleDeleteContact(store storage.Storer) {
