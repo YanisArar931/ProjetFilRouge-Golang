@@ -56,7 +56,6 @@ func Run() {
 		case 1:
 			handleAddContact(store)
 		case 2:
-			fmt.Println("Lister tous les contacts sélectionné.")
 			handleGetAllContacts(store)
 		case 3:
 			handleDeleteContact(store)
@@ -76,26 +75,49 @@ func Run() {
 func handleAddContact(store storage.Storer) {
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print("Entrez le nom : ")
-	name, _ := reader.ReadString('\n')
-	name = strings.TrimSpace(name)
+	var name, email string
+	var err error
 
-	fmt.Print("Entrez l'email : ")
-	email, _ := reader.ReadString('\n')
-	email = strings.TrimSpace(email)
+	for {
+		fmt.Print("Entrez le nom : ")
+		name, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Printf("Erreur de lecture : %v. Veuillez réessayer.\n", err)
+			continue
+		}
+		name = strings.TrimSpace(name)
+		if name != "" {
+			break
+		}
+		fmt.Println("Le nom ne peut pas être vide.")
+	}
+
+	for {
+		fmt.Print("Entrez l'email : ")
+		email, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Printf("Erreur de lecture : %v. Veuillez réessayer.\n", err)
+			continue
+		}
+		email = strings.TrimSpace(email)
+		if email != "" && strings.Contains(email, "@") {
+			break
+		}
+		fmt.Println("L'email est invalide. Veuillez réessayer.")
+	}
 
 	newContact := &storage.Contact{
 		Name:  name,
 		Email: email,
 	}
 
-	err := store.AddContact(newContact)
-	if err != nil {
+	if err := store.AddContact(newContact); err != nil {
 		fmt.Println("Erreur lors de l'ajout du contact :", err)
 		return
 	}
 
-	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", newContact.ID, newContact.Name, newContact.Email)
+	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n",
+		newContact.ID, newContact.Name, newContact.Email)
 }
 
 func handleGetAllContacts(store storage.Storer) {
@@ -127,7 +149,7 @@ func handleUpdateContact(store storage.Storer) {
 	fmt.Print("Entrez l'ID du contact à mettre à jour : ")
 	var id int
 	fmt.Scan(&id)
-	
+
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Print("Entrez le nouveau nom : ")
 	name, _ := reader.ReadString('\n')
