@@ -12,8 +12,7 @@ import (
 	//contact "github.com/YanisArar931/ProjetFilRouge-Golang/user"
 )
 
-func Run() {
-	store := storage.NewMemoryStore()
+func Run(store storage.Storer) {
 	// contactList := &contact.ContactList{
 	// 	Contacts: make(map[int]*contact.Contact),
 	// 	NextID:   1,
