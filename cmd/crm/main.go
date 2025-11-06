@@ -1,11 +1,9 @@
 package main
 
 import (
-	"github.com/YanisArar931/ProjetFilRouge-Golang/internal/app"
-	"github.com/YanisArar931/ProjetFilRouge-Golang/internal/storage"
+	"github.com/YanisArar931/ProjetFilRouge-Golang/cmd"
 )
 
 func main() {
-	store := storage.NewMemoryStore()
-	app.Run(store)
+	cmd.Execute()
 }
