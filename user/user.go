@@ -1,31 +1,43 @@
-package user
+package contact
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
 )
 
-type User struct {
+type Contact struct {
 	ID    int
 	Name  string
 	Email string
 }
 
-type List struct {
-	Users map[int]User
-	nextID int
+type ContactList struct {
+	Contacts map[int]*Contact
+	NextID   int
 }
 
-func NewList() *List {
-	return &List{
-		Users:  make(map[int]User),
-		nextID: 1,
+func NewContact(id int, name, email string) (*Contact, error) {
+	name = strings.TrimSpace(name)
+	email = strings.TrimSpace(email)
+
+	if name == "" {
+		return nil, errors.New("le nom ne peut pas être vide")
 	}
+	if email == "" || !strings.Contains(email, "@") {
+		return nil, errors.New("email invalide")
+	}
+
+	return &Contact{
+		ID:    id,
+		Name:  name,
+		Email: email,
+	}, nil
 }
 
-func AddUser() User {
+func (c *ContactList) AddContact() {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Entrez le nom : ")
@@ -36,33 +48,30 @@ func AddUser() User {
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 
-	return User{
-		Name: name,
-		Email: email,
+	newContact, err := NewContact(c.NextID, name, email)
+	if err != nil {
+		fmt.Println("Erreur lors de la création du contact :", err)
+		return
 	}
+	c.Contacts[c.NextID] = newContact
+	c.NextID++
+	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", newContact.ID, newContact.Name, newContact.Email)
 }
 
-func (l *List) Add(u User) {
-	u.ID = l.nextID
-	l.Users[u.ID] = u
-	l.nextID++
-	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n", u.ID, u.Name, u.Email)
-}
-
-func (l *List) Display() {
-	if len(l.Users) == 0 {
+func (c *ContactList) DisplayContact() {
+	if len(c.Contacts) == 0 {
 		fmt.Println("Liste vide")
 		return
 	}
 
 	fmt.Println("Liste des contacts :")
-	for _, u := range l.Users {
-		fmt.Printf("- id : %d, Nom : %s, Email : %s\n", u.ID, u.Name, u.Email)
+	for _, contact := range c.Contacts {
+		fmt.Printf("- id : %d, Nom : %s, Email : %s\n", contact.ID, contact.Name, contact.Email)
 	}
 }
 
-func (l *List) Update() {
-	if len(l.Users) == 0 {
+func (c *ContactList) UpdateContact() {
+	if len(c.Contacts) == 0 {
 		fmt.Println("Liste vide, rien à mettre à jour")
 		return
 	}
@@ -72,31 +81,30 @@ func (l *List) Update() {
 	var id int
 	fmt.Scan(&id)
 
-	user, exists := l.Users[id]
+	contact, exists := c.Contacts[id]
 	if !exists {
 		fmt.Println("Aucun contact trouvé avec cet ID.")
 		return
 	}
 
-	fmt.Printf("Nom actuel : %s. Nouveau nom (laisser vide pour ne pas changer) : ", user.Name)
+	fmt.Printf("Nom actuel : %s. Nouveau nom (laisser vide pour ne pas changer) : ", contact.Name)
 	name, _ := reader.ReadString('\n')
 	name = strings.TrimSpace(name)
 	if name != "" {
-		user.Name = name
+		contact.Name = name
 	}
 
-	fmt.Printf("Email actuel : %s. Nouvel email (laisser vide pour ne pas changer) : ", user.Email)
+	fmt.Printf("Email actuel : %s. Nouvel email (laisser vide pour ne pas changer) : ", contact.Email)
 	email, _ := reader.ReadString('\n')
 	email = strings.TrimSpace(email)
 	if email != "" {
-		user.Email = email
+		contact.Email = email
 	}
-	l.Users[id] = user
 	fmt.Println("Contact mis à jour !")
 }
 
-func (l *List) Delete() {
-	if len(l.Users) == 0 {
+func (c * ContactList) DeleteContact() {
+	if len(c.Contacts) == 0 {
 		fmt.Println("Liste vide, rien à supprimer")
 		return
 	}
@@ -105,8 +113,8 @@ func (l *List) Delete() {
 	fmt.Print("Entrez l'ID du contact à supprimer : ")
 	fmt.Scan(&id)
 
-	if _, exists := l.Users[id]; exists {
-		delete(l.Users, id)
+	if _, exists := c.Contacts[id]; exists {
+		delete(c.Contacts, id)
 		fmt.Printf("Contact avec ID %d supprimé.\n", id)
 	} else {
 		fmt.Printf("Aucun contact trouvé avec l'ID %d.\n", id)

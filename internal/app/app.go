@@ -1,0 +1,217 @@
+package app
+
+import (
+	"bufio"
+	//"flag"
+	"fmt"
+	"os"
+	"strings"
+
+	// "github.com/YanisArar931/ProjetFilRouge-Golang/internal/storage"
+	"github.com/YanisArar931/ProjetFilRouge-Golang/internal/storage"
+	//contact "github.com/YanisArar931/ProjetFilRouge-Golang/user"
+)
+
+func Run(store storage.Storer) {
+	// contactList := &contact.ContactList{
+	// 	Contacts: make(map[int]*contact.Contact),
+	// 	NextID:   1,
+	// }
+
+	// nameFlag := flag.String("name", "", "")
+	// emailFlag := flag.String("email", "", "")
+	// flag.Parse()
+
+	// if *nameFlag != "" && *emailFlag != "" {
+	// 	newContact, err := contact.NewContact(contactList.NextID, *nameFlag, *emailFlag)
+	// 	if err != nil {
+	// 		fmt.Println("Erreur :", err)
+	// 	} else {
+	// 		contactList.Contacts[contactList.NextID] = newContact
+	// 		contactList.NextID++
+	// 		fmt.Printf("Contact créé via les flags : [%d] %s <%s>\n", newContact.ID, newContact.Name, newContact.Email)
+	// 	}
+	// }
+
+	for {
+		fmt.Println()
+		fmt.Println()
+		fmt.Println("-----------------------------")
+		fmt.Println("Bienvenue dans notre Mini-CRM !")
+		fmt.Println("-----------------------------")
+		fmt.Println()
+		fmt.Println("1. Ajouter un contact")
+		fmt.Println("2. Lister tous les contacts")
+		fmt.Println("3. Supprimer un contact par son ID")
+		fmt.Println("4. Lister un contact par ID")
+		fmt.Println("5. Mettre à jour un contact")
+		fmt.Println("6. Quitter l'application")
+
+		var choice int
+		fmt.Println()
+		fmt.Print("Veuillez entrer votre choix (1-5) : ")
+		fmt.Println()
+		fmt.Scan(&choice)
+
+		switch choice {
+		case 1:
+			handleAddContact(store)
+		case 2:
+			handleGetAllContacts(store)
+		case 3:
+			handleDeleteContact(store)
+		case 4:
+			handleGetByContactID(store)
+		case 5:
+			handleUpdateContact(store)
+		case 6:
+			fmt.Println("Merci d'avoir utilisé notre Mini-CRM !")
+			return
+		default:
+			fmt.Println("Choix invalide. Veuillez réessayer.")
+		}
+	}
+}
+
+func handleAddContact(store storage.Storer) {
+	reader := bufio.NewReader(os.Stdin)
+
+	var name, email string
+	var err error
+
+	for {
+		fmt.Print("Entrez le nom : ")
+		name, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Printf("Erreur de lecture : %v. Veuillez réessayer.\n", err)
+			continue
+		}
+		name = strings.TrimSpace(name)
+		if name != "" {
+			break
+		}
+		fmt.Println("Le nom ne peut pas être vide.")
+	}
+
+	for {
+		fmt.Print("Entrez l'email : ")
+		email, err = reader.ReadString('\n')
+		if err != nil {
+			fmt.Printf("Erreur de lecture : %v. Veuillez réessayer.\n", err)
+			continue
+		}
+		email = strings.TrimSpace(email)
+		if email != "" && strings.Contains(email, "@") {
+			break
+		}
+		fmt.Println("L'email est invalide. Veuillez réessayer.")
+	}
+
+	newContact := &storage.Contact{
+		Name:  name,
+		Email: email,
+	}
+
+	if err := store.AddContact(newContact); err != nil {
+		fmt.Println("Erreur lors de l'ajout du contact :", err)
+		return
+	}
+
+	fmt.Printf("Nouveau contact ajouté : [%d] %s <%s>\n",
+		newContact.ID, newContact.Name, newContact.Email)
+}
+
+func handleGetAllContacts(store storage.Storer) {
+	contacts, err := store.GetAllContacts()
+	if err != nil {
+		fmt.Println("Erreur lors de la récupération des contacts :", err)
+		return
+	}
+
+	fmt.Println("Liste des contacts :")
+	for _, contact := range contacts {
+		fmt.Printf("- id : %d, Nom : %s, Email : %s\n", contact.ID, contact.Name, contact.Email)
+	}
+}
+
+func handleGetByContactID(store storage.Storer) {
+	fmt.Print("Entrez l'ID du contact à rechercher : ")
+	var id int
+	fmt.Scan(&id)
+	contact, err := store.GetByContactID(id)
+	if err != nil {
+		fmt.Println("Erreur lors de la récupération du contact :", err)
+		return
+	}
+	fmt.Printf("Contact trouvé : [%d] %s <%s>\n", contact.ID, contact.Name, contact.Email)
+}
+
+func handleUpdateContact(store storage.Storer) {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Print("Entrez l'ID du contact à mettre à jour : ")
+	var id int
+	_, err := fmt.Scan(&id)
+	if err != nil {
+		fmt.Println("Erreur : entrée invalide.")
+		return
+	}
+
+	contact, err := store.GetByContactID(id)
+	if err != nil {
+		fmt.Println("Erreur :", err)
+		return
+	}
+
+	fmt.Printf("Modification du contact [%d] %s <%s>\n", contact.ID, contact.Name, contact.Email)
+
+	for {
+		fmt.Print("Entrez le nouveau nom : ")
+		name, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Erreur de lecture. Réessayez.")
+			continue
+		}
+		name = strings.TrimSpace(name)
+		if name != "" {
+			contact.Name = name
+			break
+		}
+		fmt.Println("Le nom ne peut pas être vide.")
+	}
+
+	for {
+		fmt.Print("Entrez le nouvel email : ")
+		email, err := reader.ReadString('\n')
+		if err != nil {
+			fmt.Println("Erreur de lecture. Réessayez.")
+			continue
+		}
+		email = strings.TrimSpace(email)
+		if email != "" && strings.Contains(email, "@") {
+			contact.Email = email
+			break
+		}
+		fmt.Println("L'email est invalide. Veuillez réessayer.")
+	}
+
+	err = store.UpdateContact(contact.ID, contact.Name, contact.Email)
+	if err != nil {
+		fmt.Println("Erreur lors de la mise à jour : ", err)
+		return
+	}
+
+	fmt.Printf("Contact [%d] mis à jour avec succès !\n", contact.ID)
+}
+
+func handleDeleteContact(store storage.Storer) {
+	fmt.Print("Entrez l'ID du contact à supprimer : ")
+	var id int
+	fmt.Scan(&id)
+	err := store.DeleteContact(id)
+	if err != nil {
+		fmt.Println("Erreur lors de la récupération du contact :", err)
+		return
+	}
+	fmt.Printf("Contact avec l'ID %d supprimé avec succès.\n", id)
+}

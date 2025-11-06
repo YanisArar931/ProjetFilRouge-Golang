@@ -15,7 +15,7 @@ cd ProjetFilRouge-Golang
 
 ### Exécuter le programme
 ```bash
-go run .
+go run cmd/crm/main.go
 ```
 
 ## Fonctionnalités
@@ -28,7 +28,7 @@ go run .
 ### Utilisation de Flags
 Possibilités d'ajouter un contact directement en ligne de commande dans la console : 
 ```bash
-go run main.go --name="Golang" --email="golang@example.com"
+go run cmd/crm/main.go --name="Golang" --email="golang@example.com"
 ```
 
 ### Interface du projet en CLI
