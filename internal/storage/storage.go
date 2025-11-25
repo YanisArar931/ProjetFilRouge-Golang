@@ -3,7 +3,7 @@ package storage
 import "fmt"
 
 type Contact struct {
-	ID    int
+	ID    int `gorm:"primaryKey"`
 	Name  string
 	Email string
 }

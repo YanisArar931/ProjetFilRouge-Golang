@@ -3,5 +3,10 @@
     "ID": 2,
     "Name": "Mason",
     "Email": "greenwood@om.fr"
+  },
+  {
+    "ID": 3,
+    "Name": "Alice",
+    "Email": "alice@example.com"
   }
 ]
