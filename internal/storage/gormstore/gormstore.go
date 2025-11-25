@@ -68,3 +68,7 @@ func (s *Store) DeleteContact(id int) error {
 	}
 	return result.Error
 }
+
+func NewGORMStore(db *gorm.DB) *Store {
+	return &Store{db: db}
+}

@@ -1,0 +1,3 @@
+store: DUAL
+json_path: "contacts.json"
+db_path: "contacts.db"
